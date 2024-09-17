@@ -50,6 +50,7 @@ class BuildError(models.Model):
     fingerprint = fields.Char('Error fingerprint', index=True)
     random = fields.Boolean('underterministic error', tracking=True)
     responsible = fields.Many2one('res.users', 'Assigned fixer', tracking=True)
+    customer = fields.Many2one('res.users', 'Customer', tracking=True)
     team_id = fields.Many2one('runbot.team', 'Assigned team', tracking=True)
     fixing_commit = fields.Char('Fixing commit', tracking=True)
     fixing_pr_id = fields.Many2one('runbot.branch', 'Fixing PR', tracking=True, domain=[('is_pr', '=', True)])
@@ -87,6 +88,12 @@ class BuildError(models.Model):
         for record in self:
             record.tags_min_version_id = min(record.version_ids, key=lambda rec: rec.number)
             record.tags_max_version_id = max(record.version_ids, key=lambda rec: rec.number)
+
+    @api.onchange('customer')
+    def _onchange_customer(self):
+        for record in self:
+            if not self.responsible:
+                self.responsible = self.customer
 
     @api.model_create_multi
     def create(self, vals_list):

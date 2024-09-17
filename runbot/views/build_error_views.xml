@@ -29,6 +29,7 @@
                     <field name="tags_max_version_id" invisible="not test_tags"/>
                   </group>
                   <group>
+                    <field name="customer"/>
                     <field name="version_ids" widget="many2many_tags"/>
                     <field name="trigger_ids" widget="many2many_tags"/>
                     <field name="tag_ids" widget="many2many_tags" readonly="1"/>
